@@ -1,0 +1,38 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: bank-cards-postgres
+    environment:
+      POSTGRES_DB: bank_cards
+      POSTGRES_USER: bank_user
+      POSTGRES_PASSWORD: bank_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bank_user -d bank_cards"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    container_name: bank-cards-app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: bank_cards
+      DB_USERNAME: bank_user
+      DB_PASSWORD: bank_password
+      JWT_SECRET: dev-only-change-this-super-secret-key-32chars
+      JWT_EXPIRATION_MS: 86400000
+      CARD_ENCRYPTION_SECRET: dev-only-change-this-card-encryption-secret
+    ports:
+      - "8080:8080"
+
+volumes:
+  pgdata:

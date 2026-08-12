@@ -1,0 +1,11 @@
+{
+    "java.compile.nullAnalysis.mode": "disabled",
+    "cSpell.words": [
+        "bankcards",
+        "jjwt",
+        "Jwts",
+        "liquibase",
+        "springdoc",
+        "springframework"
+    ]
+}
